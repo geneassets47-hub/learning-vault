@@ -1,0 +1,10 @@
+.env
+learning.db
+__pycache__/
+*.pyc
+server.log
+server.err
+wd_out.txt
+wd_err.txt
+tmp_*.txt
+*.lnk

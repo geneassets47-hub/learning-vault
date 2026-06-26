@@ -1,0 +1,1481 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>AKKEY — SKILL BOARD</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Bebas+Neue&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:     #09090f;
+  --bg2:    #0d0d16;
+  --bg3:    #12121e;
+  --panel:  #151520;
+  --red:    #cc1a1a;
+  --red2:   #ff2424;
+  --red3:   #ff4444;
+  --gold:   #e8b84b;
+  --gold2:  #ffd700;
+  --cyan:   #00e5ff;
+  --green:  #39ff6e;
+  --purple: #b44aff;
+  --blue:   #4a9eff;
+  --border: #1e1e30;
+  --border2:#2a2a42;
+  --text:   #f0ece6;
+  --text2:  #6a6a8a;
+  --text3:  #3a3a55;
+  --sidebar-w: 56px;
+  --footer-h:  72px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;overflow-x:hidden;}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:'Noto Sans JP','Segoe UI',sans-serif;
+  padding-left:var(--sidebar-w);
+  padding-bottom:var(--footer-h);
+}
+
+/* ═══════════════ SCANLINE OVERLAY ═══════════════ */
+body::before{
+  content:'';
+  position:fixed;inset:0;
+  background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,.06) 3px,rgba(0,0,0,.06) 4px);
+  pointer-events:none;z-index:1000;
+}
+
+/* ═══════════════ LEFT SIDEBAR ═══════════════ */
+.sidebar{
+  position:fixed;left:0;top:0;bottom:0;
+  width:var(--sidebar-w);
+  background:linear-gradient(180deg,#0a0a14 0%,#0d0a10 100%);
+  border-right:1px solid var(--border);
+  display:flex;flex-direction:column;align-items:center;
+  gap:0;z-index:200;
+  padding-top:0;
+}
+.sb-logo{
+  width:100%;padding:14px 0 12px;
+  display:flex;flex-direction:column;align-items:center;
+  border-bottom:1px solid var(--border);
+  margin-bottom:8px;
+}
+.sb-logo svg{width:28px;height:28px;}
+.sb-logo-label{font-size:7px;letter-spacing:1px;color:var(--text2);text-transform:uppercase;margin-top:3px;}
+.sb-nav{
+  display:flex;flex-direction:column;align-items:center;gap:2px;
+  flex:1;width:100%;padding:4px 0;
+}
+.sb-icon{
+  width:100%;height:44px;display:flex;align-items:center;justify-content:center;
+  cursor:pointer;color:var(--text3);font-size:17px;
+  transition:color .15s,background .15s;
+  position:relative;
+}
+.sb-icon:hover{color:var(--text);background:rgba(255,255,255,.04);}
+.sb-icon.active{color:var(--red2);}
+.sb-icon.active::before{
+  content:'';position:absolute;left:0;top:8px;bottom:8px;
+  width:2px;background:var(--red2);border-radius:0 2px 2px 0;
+}
+.sb-levelup{
+  width:42px;height:42px;
+  background:linear-gradient(135deg,#cc1a1a,#880a0a);
+  border:1px solid var(--red);
+  border-radius:4px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  margin:8px 0 12px;
+  cursor:pointer;
+  animation:glowPulse 2s ease-in-out infinite;
+}
+@keyframes glowPulse{0%,100%{box-shadow:0 0 6px rgba(204,26,26,.4);}50%{box-shadow:0 0 14px rgba(204,26,26,.8);}}
+.sb-levelup-text{font-family:'Rajdhani',sans-serif;font-size:9px;font-weight:700;letter-spacing:1px;color:#fff;line-height:1.1;text-align:center;}
+
+/* ═══════════════ HEADER ═══════════════ */
+.hdr{
+  background:linear-gradient(135deg,#0c0c18 0%,#140810 70%,#0c0a14 100%);
+  border-bottom:2px solid var(--red);
+  padding:14px 20px 14px 20px;
+  position:relative;overflow:hidden;
+  min-height:90px;
+}
+.hdr-bg{
+  position:absolute;inset:0;
+  background:
+    radial-gradient(ellipse at 80% 50%,rgba(204,26,26,.08) 0%,transparent 60%),
+    radial-gradient(ellipse at 20% 80%,rgba(100,0,200,.05) 0%,transparent 50%);
+}
+.hdr-inner{position:relative;z-index:1;display:flex;align-items:flex-start;justify-content:space-between;}
+.hdr-left{}
+.hdr-eyebrow{
+  font-family:'Rajdhani',sans-serif;
+  font-size:9px;letter-spacing:2px;color:var(--text2);
+  text-transform:uppercase;margin-bottom:4px;
+}
+.hdr-title{
+  font-family:'Bebas Neue','Rajdhani',sans-serif;
+  font-size:36px;letter-spacing:3px;line-height:1;
+  color:var(--text);
+}
+.hdr-title em{color:var(--red2);font-style:normal;}
+.hdr-sub{font-size:9px;color:var(--text2);letter-spacing:2px;text-transform:uppercase;margin-top:6px;}
+.hdr-date{
+  font-family:'Rajdhani',sans-serif;
+  font-size:12px;font-weight:600;letter-spacing:1px;
+  background:rgba(204,26,26,.15);
+  border:1px solid rgba(204,26,26,.3);
+  border-radius:4px;padding:4px 10px;
+  color:var(--red3);
+  white-space:nowrap;
+}
+.hdr-right{display:flex;flex-direction:column;align-items:flex-end;gap:6px;}
+
+.portrait{
+  width:80px;height:100px;
+  flex-shrink:0;overflow:hidden;
+  border:1px solid rgba(204,26,26,.35);
+  border-radius:4px;
+  position:relative;
+}
+.portrait img{
+  width:100%;height:100%;
+  object-fit:cover;object-position:top center;
+  display:block;
+}
+
+/* ═══════════════ PLAYER STATUS ═══════════════ */
+.status{
+  background:var(--bg2);
+  border-bottom:1px solid var(--border);
+  padding:14px 20px;
+}
+.status-hdr{
+  display:flex;align-items:center;gap:8px;
+  margin-bottom:12px;
+}
+.status-hdr-label{
+  font-family:'Rajdhani',sans-serif;
+  font-size:11px;font-weight:700;letter-spacing:2px;
+  color:var(--red2);text-transform:uppercase;
+}
+.status-hdr::before{content:'▶';font-size:9px;color:var(--red);}
+.status-hdr::after{content:'';flex:1;height:1px;background:var(--border);}
+.stat-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:10px;
+}
+.stat-card{
+  background:var(--bg3);
+  border:1px solid var(--border);
+  border-radius:6px;
+  padding:10px 12px;
+  position:relative;overflow:hidden;
+}
+.stat-card::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,rgba(255,255,255,.02) 0%,transparent 60%);
+}
+.stat-top{display:flex;align-items:center;gap:7px;margin-bottom:7px;}
+.stat-icon{font-size:14px;flex-shrink:0;}
+.stat-name{font-family:'Rajdhani',sans-serif;font-size:11px;font-weight:600;letter-spacing:.5px;flex:1;}
+.stat-lv{
+  font-family:'Rajdhani',sans-serif;
+  font-size:14px;font-weight:700;
+  white-space:nowrap;
+}
+.stat-bar{height:4px;background:rgba(255,255,255,.08);border-radius:2px;margin-bottom:4px;overflow:hidden;}
+.stat-fill{height:100%;border-radius:2px;position:relative;}
+.stat-fill::after{
+  content:'';position:absolute;right:0;top:0;bottom:0;width:5px;
+  background:rgba(255,255,255,.7);border-radius:2px;
+  animation:tip 2s ease-in-out infinite;
+}
+@keyframes tip{0%,100%{opacity:1}50%{opacity:.2}}
+.stat-exp{font-size:9px;color:var(--text2);letter-spacing:.5px;}
+
+.fill-re{background:linear-gradient(90deg,#aa0a0a,var(--red2));}
+.fill-go{background:linear-gradient(90deg,#996600,var(--gold2));}
+.fill-cy{background:linear-gradient(90deg,#007a99,var(--cyan));}
+.fill-pu{background:linear-gradient(90deg,#6600aa,var(--purple));}
+.fill-gr{background:linear-gradient(90deg,#1a8833,var(--green));}
+.fill-bl{background:linear-gradient(90deg,#1a5599,var(--blue));}
+.lv-bl{color:var(--blue);}
+.lv-re{color:var(--red2);}
+.lv-go{color:var(--gold);}
+.lv-cy{color:var(--cyan);}
+.lv-pu{color:var(--purple);}
+.lv-gr{color:var(--green);}
+
+/* ═══════════════ CAPTURE ZONE ═══════════════ */
+.capture{
+  background:var(--bg2);
+  border-bottom:1px solid var(--border);
+  padding:12px 20px;
+}
+.cap-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
+.cap-label{
+  font-family:'Rajdhani',sans-serif;
+  font-size:11px;font-weight:700;letter-spacing:2px;
+  color:var(--cyan);text-transform:uppercase;
+}
+.cap-label span{font-size:9px;margin-left:4px;}
+.cap-exp-badge{
+  font-family:'Rajdhani',sans-serif;
+  font-size:10px;font-weight:700;
+  color:var(--gold);
+  background:rgba(232,184,75,.12);
+  border:1px solid rgba(232,184,75,.25);
+  border-radius:3px;padding:2px 8px;
+  letter-spacing:1px;
+}
+.cap-row{display:flex;gap:8px;}
+.cap-input{
+  flex:1;
+  background:var(--bg);
+  border:1px solid var(--border2);
+  border-radius:4px;
+  color:var(--text);
+  font-family:'Noto Sans JP',sans-serif;
+  font-size:12px;
+  padding:10px 14px;
+  outline:none;
+  transition:border-color .2s,box-shadow .2s;
+}
+.cap-input:focus{border-color:var(--cyan);box-shadow:0 0 0 2px rgba(0,229,255,.1);}
+.cap-input::placeholder{color:var(--text3);}
+.btn-rec{
+  background:var(--red);
+  color:#fff;
+  border:none;border-radius:4px;
+  padding:10px 20px;
+  font-family:'Bebas Neue','Rajdhani',sans-serif;
+  font-size:16px;letter-spacing:2px;
+  cursor:pointer;white-space:nowrap;
+  transition:background .15s,box-shadow .15s;
+  position:relative;overflow:hidden;
+}
+.btn-rec::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,rgba(255,255,255,.15) 0%,transparent 50%);
+}
+.btn-rec:hover{background:var(--red2);box-shadow:0 0 16px rgba(204,26,26,.6);}
+.cap-msg{font-size:10px;color:var(--green);margin-top:6px;display:none;letter-spacing:.5px;}
+
+/* ═══════════════ SECTIONS ═══════════════ */
+.sections{padding:16px 20px 0;}
+
+.sec{margin-bottom:20px;}
+.sec-hdr{
+  display:flex;align-items:center;gap:12px;
+  margin-bottom:10px;
+  padding-bottom:8px;
+  border-bottom:1px solid var(--border);
+}
+.sec-num{
+  font-family:'Bebas Neue','Rajdhani',sans-serif;
+  font-size:32px;line-height:1;
+  color:var(--red);
+  font-style:italic;
+  min-width:32px;
+}
+.sec-titles{}
+.sec-title-en{
+  font-family:'Rajdhani',sans-serif;
+  font-size:14px;font-weight:700;letter-spacing:2px;
+  text-transform:uppercase;color:var(--text);
+}
+.sec-title-jp{font-size:9px;color:var(--text2);letter-spacing:1px;margin-top:1px;}
+.sec-hdr-line{flex:1;height:1px;background:var(--border);}
+
+/* QUEST CARDS */
+.cards{display:flex;flex-direction:column;gap:5px;}
+
+.qcard{
+  background:var(--bg3);
+  border:1px solid var(--border);
+  border-radius:6px;
+  overflow:hidden;
+  transition:border-color .15s;
+  position:relative;
+  cursor:pointer;
+}
+.qcard:hover{border-color:var(--border2);}
+.qcard.open{border-color:rgba(232,184,75,.25);}
+
+/* manga art bg on cards */
+.qcard-art{
+  position:absolute;right:0;top:0;bottom:0;width:180px;
+  background:linear-gradient(90deg,var(--bg3) 0%,transparent 40%);
+  z-index:1;
+}
+.qcard-art-inner{
+  position:absolute;right:0;top:0;bottom:0;width:180px;
+  opacity:.12;
+  background:
+    radial-gradient(ellipse at 70% 50%,rgba(200,200,255,.3) 0%,transparent 60%),
+    repeating-linear-gradient(45deg,transparent,transparent 8px,rgba(255,255,255,.03) 8px,rgba(255,255,255,.03) 9px);
+}
+
+.qcard-hdr{
+  position:relative;z-index:2;
+  display:flex;align-items:center;gap:12px;
+  padding:11px 16px 11px 14px;
+  user-select:none;
+}
+.qcard-icon{font-size:18px;flex-shrink:0;width:28px;text-align:center;}
+.qcard-texts{flex:1;min-width:0;}
+.qcard-name{font-size:13px;font-weight:700;margin-bottom:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.qcard-desc{font-size:9px;color:var(--text2);letter-spacing:.5px;}
+.qcard-right{display:flex;align-items:center;gap:8px;flex-shrink:0;}
+.badge{
+  font-family:'Rajdhani',sans-serif;
+  font-size:9px;font-weight:700;letter-spacing:1.5px;
+  padding:2px 8px;border-radius:3px;text-transform:uppercase;white-space:nowrap;
+}
+.b-line{border:1px solid rgba(57,255,110,.35);color:var(--green);background:rgba(57,255,110,.08);}
+.b-yt  {border:1px solid rgba(255,60,60,.35); color:#ff6060; background:rgba(255,60,60,.08);}
+.b-fb  {border:1px solid rgba(74,158,255,.35);color:var(--blue);background:rgba(74,158,255,.08);}
+.b-vm  {border:1px solid rgba(26,190,255,.35);color:#1abeff; background:rgba(26,190,255,.08);}
+.b-web {border:1px solid rgba(180,74,255,.35); color:var(--purple);background:rgba(180,74,255,.08);}
+.b-ntv {border:1px solid rgba(232,184,75,.35); color:var(--gold);background:rgba(232,184,75,.08);}
+.b-gpt {border:1px solid rgba(57,255,110,.25); color:#5af59c; background:rgba(57,255,110,.06);}
+.qcard-arrow{color:var(--text3);font-size:14px;transition:transform .2s,color .2s;}
+.qcard.open .qcard-arrow{transform:rotate(90deg);color:var(--gold);}
+.qcard:hover .qcard-arrow{color:var(--text2);}
+
+/* body */
+.qcard-body{
+  display:none;
+  border-top:1px solid var(--border);
+  position:relative;z-index:2;
+}
+.qcard.open .qcard-body{display:block;}
+
+.sublabel{
+  padding:8px 16px 2px;
+  font-size:9px;font-weight:700;
+  color:var(--text3);letter-spacing:1.5px;text-transform:uppercase;
+}
+.qlink{
+  display:flex;align-items:center;gap:10px;
+  padding:8px 16px;
+  text-decoration:none;color:var(--text2);font-size:11px;
+  transition:background .1s,color .1s;
+}
+.qlink:hover{background:rgba(255,255,255,.03);color:var(--text);}
+.qdot{width:4px;height:4px;border-radius:50%;background:var(--border2);flex-shrink:0;transition:background .1s;}
+.qlink:hover .qdot{background:var(--gold);}
+.qlabel{flex:1;line-height:1.5;}
+.qtag{
+  font-family:'Rajdhani',sans-serif;
+  font-size:9px;letter-spacing:.5px;
+  padding:1px 6px;border-radius:3px;
+  white-space:nowrap;flex-shrink:0;
+}
+.qt-pri{background:rgba(0,229,255,.1);color:var(--cyan);}
+.qt-new{background:rgba(204,26,26,.15);color:var(--red3);}
+.qt-nml{background:rgba(255,255,255,.06);color:var(--text2);}
+
+/* direct card */
+.qcard-direct{
+  background:var(--bg3);border:1px solid var(--border);
+  border-radius:6px;text-decoration:none;color:var(--text);
+  display:flex;align-items:center;gap:12px;
+  padding:11px 16px 11px 14px;
+  transition:border-color .15s,background .15s;
+  position:relative;overflow:hidden;cursor:pointer;
+}
+.qcard-direct::before{
+  content:'';position:absolute;right:0;top:0;bottom:0;width:180px;
+  background:linear-gradient(90deg,var(--bg3) 0%,rgba(200,200,255,.02) 100%);
+}
+.qcard-direct:hover{border-color:var(--border2);background:#141422;}
+.qd-icon{font-size:18px;flex-shrink:0;width:28px;text-align:center;position:relative;z-index:1;}
+.qd-texts{flex:1;min-width:0;position:relative;z-index:1;}
+.qd-name{font-size:13px;font-weight:700;margin-bottom:1px;}
+.qd-desc{font-size:9px;color:var(--text2);}
+.qd-right{display:flex;align-items:center;gap:8px;flex-shrink:0;position:relative;z-index:1;}
+
+/* ═══════════════ FOOTER ═══════════════ */
+.footer{
+  position:fixed;bottom:0;left:var(--sidebar-w);right:0;
+  height:var(--footer-h);
+  background:linear-gradient(135deg,#0d0d1a 0%,#10080e 100%);
+  border-top:1px solid var(--red);
+  display:flex;align-items:center;
+  padding:0 16px;gap:12px;z-index:100;
+}
+.ft-portrait{
+  width:44px;height:56px;flex-shrink:0;
+  border:1px solid rgba(204,26,26,.4);border-radius:4px;overflow:hidden;
+}
+.ft-portrait img{width:100%;height:100%;object-fit:cover;object-position:top center;display:block;}
+
+.ft-player{flex-shrink:0;}
+.ft-name{
+  font-family:'Bebas Neue','Rajdhani',sans-serif;
+  font-size:18px;letter-spacing:2px;line-height:1;
+}
+.ft-rank-row{display:flex;align-items:center;gap:6px;margin-top:2px;}
+.ft-rank-label{font-size:8px;color:var(--text2);letter-spacing:1px;}
+.ft-rank{
+  font-family:'Rajdhani',sans-serif;
+  font-size:22px;font-weight:700;
+  color:var(--red2);line-height:1;
+}
+.ft-div{width:1px;height:40px;background:var(--border);flex-shrink:0;}
+.ft-exp{flex:1;min-width:0;}
+.ft-exp-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;}
+.ft-next{font-size:8px;color:var(--text2);letter-spacing:1px;}
+.ft-next-rank{
+  font-family:'Rajdhani',sans-serif;
+  font-size:14px;font-weight:700;
+  color:var(--gold);letter-spacing:1px;
+}
+.ft-exp-bar{height:5px;background:rgba(255,255,255,.08);border-radius:3px;overflow:hidden;}
+.ft-exp-fill{
+  height:100%;border-radius:3px;
+  background:linear-gradient(90deg,var(--red),var(--red2));
+  transition:width 1s ease;position:relative;
+}
+.ft-exp-fill::after{
+  content:'';position:absolute;right:0;top:0;bottom:0;width:6px;
+  background:rgba(255,255,255,.7);border-radius:3px;
+  animation:tip 1.5s ease-in-out infinite;
+}
+.ft-exp-num{font-size:8px;color:var(--text2);margin-top:3px;letter-spacing:.5px;}
+.ft-div2{width:1px;height:40px;background:var(--border);flex-shrink:0;}
+.ft-mission{flex-shrink:0;max-width:160px;}
+.ft-m-label{font-size:8px;color:var(--text2);letter-spacing:1px;text-transform:uppercase;margin-bottom:3px;}
+.ft-m-text{font-size:11px;font-weight:700;margin-bottom:4px;}
+.ft-m-reward{display:flex;align-items:center;justify-content:space-between;gap:8px;}
+.ft-m-rew-text{font-size:8px;color:var(--gold);letter-spacing:.5px;}
+.ft-m-prog{
+  font-family:'Rajdhani',sans-serif;
+  font-size:11px;font-weight:700;
+  color:var(--text2);
+}
+.ft-div3{width:1px;height:40px;background:var(--border);flex-shrink:0;}
+.ft-streak{flex-shrink:0;text-align:center;min-width:52px;}
+.ft-streak-icon{font-size:14px;}
+.ft-streak-num{
+  font-family:'Bebas Neue','Rajdhani',sans-serif;
+  font-size:28px;line-height:1;color:var(--red2);
+}
+.ft-streak-label{font-size:8px;color:var(--text2);letter-spacing:1px;text-transform:uppercase;}
+
+/* ═══════════════ TAB BAR ═══════════════ */
+.tabbar{
+  display:flex;align-items:stretch;gap:0;
+  background:var(--bg2);
+  border-bottom:1px solid var(--border);
+  padding:0 20px;
+}
+.tab{
+  font-family:'Rajdhani',sans-serif;
+  font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;
+  color:var(--text2);
+  padding:13px 18px 11px;
+  cursor:pointer;position:relative;
+  border-bottom:2px solid transparent;
+  transition:color .15s;
+  display:flex;align-items:center;gap:7px;white-space:nowrap;
+}
+.tab .tab-jp{font-family:'Noto Sans JP';font-size:9px;font-weight:500;letter-spacing:1px;color:var(--text3);}
+.tab:hover{color:var(--text);}
+.tab.active{color:var(--red2);border-bottom-color:var(--red2);}
+.tab.active .tab-jp{color:var(--text2);}
+
+/* ═══════════════ VIEWS ═══════════════ */
+.view{display:none;}
+.view.active{display:block;}
+
+/* ═══════════════ LIBRARY ═══════════════ */
+.lib-wrap{padding:16px 20px;}
+.lib-chips{
+  display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px;
+}
+.chip{
+  font-family:'Rajdhani',sans-serif;
+  font-size:11px;font-weight:600;letter-spacing:.5px;
+  padding:6px 13px;border-radius:20px;cursor:pointer;
+  background:var(--bg3);border:1px solid var(--border2);
+  color:var(--text2);transition:all .15s;
+  display:flex;align-items:center;gap:6px;
+}
+.chip:hover{color:var(--text);border-color:var(--red);}
+.chip.active{background:rgba(204,26,26,.18);border-color:var(--red2);color:var(--red3);}
+.chip .chip-ct{
+  font-size:9px;background:rgba(0,0,0,.3);border-radius:10px;
+  padding:1px 6px;color:var(--text2);
+}
+.chip.active .chip-ct{color:var(--red3);}
+
+.lib-list{display:flex;flex-direction:column;gap:11px;}
+.lib-empty{
+  text-align:center;color:var(--text3);font-size:12px;
+  padding:50px 20px;font-family:'Rajdhani';letter-spacing:1px;
+}
+.lcard{
+  background:var(--bg3);border:1px solid var(--border);
+  border-radius:8px;padding:13px 15px;
+  position:relative;overflow:hidden;
+  transition:border-color .2s,box-shadow .2s;
+  cursor:pointer;
+}
+.lcard:hover{border-color:var(--border2);box-shadow:0 2px 16px rgba(0,0,0,.3);}
+.lcard.expanded{border-color:var(--accent,#cc1a1a);box-shadow:0 4px 24px rgba(0,0,0,.4);}
+.lcard::before{
+  content:'';position:absolute;left:0;top:0;bottom:0;width:3px;
+  background:var(--accent,#cc1a1a);
+}
+.lcard-top{
+  display:flex;align-items:center;gap:9px;margin-bottom:8px;
+}
+.lcard-src{
+  font-family:'Rajdhani';font-size:10px;font-weight:700;letter-spacing:1px;
+  text-transform:uppercase;
+  background:rgba(204,26,26,.15);border:1px solid rgba(204,26,26,.3);
+  color:var(--red3);padding:2px 8px;border-radius:3px;
+}
+.lcard-date{font-size:10px;color:var(--text3);font-family:'Rajdhani';letter-spacing:1px;}
+.lcard-cats{display:flex;gap:4px;margin-left:auto;}
+.lcard-toggle{
+  font-size:10px;color:var(--text3);margin-left:6px;
+  font-family:'Rajdhani';letter-spacing:1px;
+  transition:transform .2s;
+}
+.lcard.expanded .lcard-toggle{transform:rotate(180deg);}
+.lcard-cat{
+  font-size:13px;line-height:1;opacity:.85;
+}
+.lcard-summary{
+  font-size:13px;font-weight:400;color:#d8dcea;line-height:1.7;
+  margin-bottom:8px;white-space:pre-wrap;
+}
+/* 畳んだ状態では3行で省略、クリック展開で全文 */
+.lcard:not(.expanded) .lcard-summary{
+  display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;
+  overflow:hidden;
+}
+/* 【見出し】の小見出し装飾 */
+.rich-h{
+  display:block;color:var(--gold);font-weight:700;font-size:11.5px;
+  letter-spacing:.5px;margin:13px 0 4px;
+  padding-bottom:3px;border-bottom:1px solid rgba(232,184,75,.18);
+}
+.rich-h:first-child{margin-top:0;}
+.rich-b{color:var(--text);font-weight:700;}
+.lcard-detail-insight .rich-h{color:var(--cyan);border-bottom-color:rgba(0,229,255,.18);}
+.lcard-detail-abstract .rich-h{color:var(--purple);border-bottom-color:rgba(180,74,255,.18);}
+.lcard-insight{
+  font-size:11.5px;color:#cdd0e0;line-height:1.55;
+  background:rgba(0,0,0,.22);border-left:2px solid var(--cyan);
+  padding:7px 11px;border-radius:0 4px 4px 0;margin-bottom:8px;
+}
+.lcard-insight::before{content:'💡 ';opacity:.8;}
+.lcard-tags{display:flex;flex-wrap:wrap;gap:5px;}
+.lcard-tag{
+  font-size:9.5px;color:var(--text2);
+  background:var(--bg);border:1px solid var(--border);
+  padding:2px 7px;border-radius:3px;
+}
+/* 展開ディテール */
+.lcard-detail{
+  display:none;margin-top:12px;
+  border-top:1px solid var(--border);padding-top:12px;
+}
+.lcard.expanded .lcard-detail{display:block;}
+.lcard-detail-label{
+  font-family:'Rajdhani';font-size:9px;letter-spacing:2px;color:var(--text3);
+  text-transform:uppercase;margin-bottom:5px;
+}
+.lcard-original{
+  font-size:12px;color:#9090b0;line-height:1.65;white-space:pre-wrap;
+  background:rgba(0,0,0,.25);border-radius:5px;padding:10px 12px;
+  max-height:320px;overflow-y:auto;
+  scrollbar-width:thin;scrollbar-color:var(--border2) transparent;
+}
+.lcard-detail-insight{
+  font-size:12px;color:#cdd0e0;line-height:1.7;white-space:pre-wrap;
+  background:rgba(0,0,0,.22);border-left:2px solid var(--cyan);
+  padding:8px 12px;border-radius:0 4px 4px 0;margin-top:10px;
+}
+.lcard-detail-insight::before{content:'💡 ';opacity:.8;}
+.lcard-detail-abstract{
+  font-size:12px;color:#b8c0d8;line-height:1.7;white-space:pre-wrap;
+  background:rgba(180,74,255,.08);border-left:2px solid var(--purple);
+  padding:8px 12px;border-radius:0 4px 4px 0;margin-top:4px;
+}
+.lib-stat{
+  font-family:'Rajdhani';font-size:10px;letter-spacing:1px;
+  color:var(--text2);margin-bottom:14px;text-transform:uppercase;
+}
+
+/* ═══════════════ MOBILE ═══════════════ */
+@media(max-width:520px){
+  :root{--sidebar-w:0px;--footer-h:80px;}
+  .sidebar{display:none;}
+  .hdr-title{font-size:26px;}
+  .portrait{width:52px;height:60px;}
+  .portrait svg{width:44px;height:58px;}
+  .stat-grid{grid-template-columns:repeat(2,1fr);}
+  .qcard-desc{display:none;}
+  .qd-desc{display:none;}
+  .ft-mission{display:none;}
+  .ft-div2{display:none;}
+  .ft-exp{flex:2;}
+  .sections{padding:12px 12px 0;}
+  .status,.capture{padding:12px;}
+  .cap-row{flex-direction:column;}
+  .btn-rec{width:100%;}
+  .tabbar{padding:0 10px;overflow-x:auto;}
+  .tab{padding:11px 12px 9px;font-size:11px;}
+  .lib-wrap{padding:12px;}
+}
+@media(max-width:380px){
+  .hdr{padding:10px 12px;}
+  .hdr-title{font-size:22px;}
+  .ft-portrait{display:none;}
+  .ft-player{flex-shrink:0;}
+}
+</style>
+</head>
+<body>
+
+<!-- ═══ SIDEBAR ═══ -->
+<aside class="sidebar">
+  <div class="sb-logo">
+    <svg viewBox="0 0 32 32" fill="none">
+      <polygon points="16,2 28,9 28,23 16,30 4,23 4,9" stroke="#cc1a1a" stroke-width="1.5" fill="rgba(204,26,26,.1)"/>
+      <polygon points="16,7 23,11 23,21 16,25 9,21 9,11" stroke="#cc1a1a" stroke-width="1" fill="none" opacity=".5"/>
+      <line x1="16" y1="2" x2="16" y2="30" stroke="#cc1a1a" stroke-width=".5" opacity=".4"/>
+      <line x1="4" y1="9" x2="28" y2="23" stroke="#cc1a1a" stroke-width=".5" opacity=".4"/>
+      <line x1="28" y1="9" x2="4" y2="23" stroke="#cc1a1a" stroke-width=".5" opacity=".4"/>
+      <circle cx="16" cy="16" r="3" fill="#cc1a1a"/>
+    </svg>
+    <span class="sb-logo-label">AKKEY</span>
+  </div>
+  <nav class="sb-nav">
+    <div class="sb-icon active" title="スキルボード">📋</div>
+    <div class="sb-icon" title="進捗">📈</div>
+    <div class="sb-icon" title="ネットワーク">🕸️</div>
+    <div class="sb-icon" title="ライブラリ">📚</div>
+    <div class="sb-icon" title="目標">🎯</div>
+  </nav>
+  <div class="sb-levelup">
+    <span class="sb-levelup-text">LEVEL<br>UP!</span>
+  </div>
+</aside>
+
+<!-- ═══ HEADER ═══ -->
+<header class="hdr">
+  <div class="hdr-bg"></div>
+  <div class="hdr-inner">
+    <div class="hdr-left">
+      <div class="hdr-eyebrow">LEARNING VAULT — REAL ESTATE × INSTAGRAM × MARKET</div>
+      <div class="hdr-title">AKKEY — <em>SKILL</em> BOARD</div>
+      <div class="hdr-sub">Daily Intelligence Dashboard</div>
+    </div>
+    <div class="hdr-right">
+      <div class="hdr-date" id="hdrDate">—</div>
+      <div class="portrait">
+        <img src="image-1781108826407.png" alt="AKKEY">
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ═══ TAB BAR ═══ -->
+<nav class="tabbar">
+  <div class="tab active" data-tab="board" onclick="switchView('board')">
+    📋 Skill Board<span class="tab-jp">スキルボード</span>
+  </div>
+  <div class="tab" data-tab="library" onclick="switchView('library')">
+    📚 Archive<span class="tab-jp">学習アーカイブ</span>
+  </div>
+</nav>
+
+<!-- ═══ VIEW: BOARD ═══ -->
+<div class="view active" id="view-board">
+
+<!-- ═══ PLAYER STATUS ═══ -->
+<section class="status">
+  <div class="status-hdr"><span class="status-hdr-label">Player Status</span></div>
+  <div class="stat-grid" id="statGrid"></div>
+</section>
+
+<!-- ═══ CAPTURE ═══ -->
+<section class="capture">
+  <div class="cap-hdr">
+    <div class="cap-label">⚡ EXP <span>/</span> 学習を記録する</div>
+    <div class="cap-exp-badge">+10 EXP</div>
+  </div>
+  <div class="cap-row">
+    <input class="cap-input" type="text" id="learnInput"
+      placeholder="URLまたはメモを入力... (Enterで記録)"/>
+    <button class="btn-rec" onclick="recordLearning()">RECORD</button>
+  </div>
+  <div class="cap-msg" id="capMsg">✓ EXP +10 獲得 — バックエンド接続後に自動分析が走ります</div>
+</section>
+
+<!-- ═══ SKILL TREES ═══ -->
+<main class="sections">
+
+  <!-- 01 Real Estate -->
+  <div class="sec">
+    <div class="sec-hdr">
+      <span class="sec-num">01</span>
+      <div class="sec-titles">
+        <div class="sec-title-en">Real Estate — Skill Tree</div>
+        <div class="sec-title-jp">不動産スキルツリー</div>
+      </div>
+      <div class="sec-hdr-line"></div>
+    </div>
+    <div class="cards">
+
+      <!-- MJサロン -->
+      <div class="qcard" id="c-mj" onclick="toggle('c-mj')">
+        <div class="qcard-art"><div class="qcard-art-inner"></div></div>
+        <div class="qcard-hdr">
+          <div class="qcard-icon">🏢</div>
+          <div class="qcard-texts">
+            <div class="qcard-name">MJサロン</div>
+            <div class="qcard-desc">コミュニティ × 学び × 実践</div>
+          </div>
+          <div class="qcard-right">
+            <span class="badge b-line">LINE</span>
+            <span class="qcard-arrow">›</span>
+          </div>
+        </div>
+        <div class="qcard-body">
+          <a class="qlink" href="https://line.me/R/ti/p/@263qltyw" target="_blank" onclick="e=event,e.stopPropagation()">
+            <span class="qdot"></span><span class="qlabel">LINE公式（動画・コンテンツ配信）</span><span class="qtag qt-pri">メイン</span>
+          </a>
+          <a class="qlink" href="https://docs.google.com/document/u/0/d/1sIkXHMaWLqPy0Bs_8wiuLABD3ORggU9VthCNFhQHnz8/mobilebasic" target="_blank" onclick="e=event,e.stopPropagation()">
+            <span class="qdot"></span><span class="qlabel">動画まとめ（Google Doc）</span><span class="qtag qt-nml">一覧</span>
+          </a>
+          <a class="qlink" href="https://drive.google.com/drive/u/0/mobile/folders/1ufiPrL1v7Of1lvwSfvpf-Eg3WSH_r2Kh?usp=drive_link" target="_blank" onclick="e=event,e.stopPropagation()">
+            <span class="qdot"></span><span class="qlabel">資料フォルダ（Google Drive）</span>
+          </a>
+          <a class="qlink" href="https://drive.google.com/file/d/1f5RBn0DhC6mwmSnxI9PJ9s5rsSrmQhfB/view" target="_blank" onclick="e=event,e.stopPropagation()">
+            <span class="qdot"></span><span class="qlabel">スケジュール</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- 火災保険アカデミー -->
+      <div class="qcard" id="c-kasai" onclick="toggle('c-kasai')">
+        <div class="qcard-art"><div class="qcard-art-inner"></div></div>
+        <div class="qcard-hdr">
+          <div class="qcard-icon">🔥</div>
+          <div class="qcard-texts">
+            <div class="qcard-name">火災保険アカデミー</div>
+            <div class="qcard-desc">保険の知識で資産を守る</div>
+          </div>
+          <div class="qcard-right">
+            <span class="badge b-ntv">Notion</span>
+            <span class="qcard-arrow">›</span>
+          </div>
+        </div>
+        <div class="qcard-body">
+          <a class="qlink" href="https://app.notion.com/p/83bd6343d17e4c96aa24f3baae4f9ee0" target="_blank" onclick="event.stopPropagation()">
+            <span class="qdot"></span><span class="qlabel">メインハブ（Notion）</span><span class="qtag qt-pri">入口</span>
+          </a>
+          <div class="sublabel">📱 スマホ学習 Q&A — 17本</div>
+          <a class="qlink" href="https://vimeo.com/1034746770/5fbe0ac3ae" target="_blank" onclick="event.stopPropagation()"><span class="qdot"></span><span class="qlabel">001 中古物件購入時の火災保険、名義変更で継続すべき？</span></a>
+          <a class="qlink" href="https://vimeo.com/1034746830/2fd14f4bad" target="_blank" onclick="event.stopPropagation()"><span class="qdot"></span><span class="qlabel">002 物件別でおすすめの保険会社は？</span></a>
+          <a class="qlink" href="https://vimeo.com/1034746867/27f4aaa804" target="_blank" onclick="event.stopPropagation()"><span class="qdot"></span><span class="qlabel">003 離島の台風被害、発見が遅れても保険申請できる？</span></a>
+          <a class="qlink" href="https://vimeo.com/1039317738/273235b193" target="_blank" onclick="event.stopPropagation()"><span class="qdot"></span><span class="qlabel">004 築40年の改修工事。タイミングとポイントは？</span></a>
+          <a class="qlink" href="https://vimeo.com/1039317801/11d006e56a" target="_blank" onclick="event.stopPropagation()"><span class="qdot"></span><span class="qlabel">005 否認をひっくり返す方法は？</span></a>
+          <a class="qlink" href="https://vimeo.com/1045936402/8203711944" target="_blank" onclick="event.stopPropagation()"><span class="qdot"></span><span class="qlabel">006 築35年マンション バルコニーの歪み改修工事のポイントは？</span></a>
+          <a class="qlink" href="https://vimeo.com/1045936411/ee73aa1cd1" target="_blank" onclick="event.stopPropagation()"><span class="qdot"></span><span class="qlabel">007 アパート浴室の排水管詰まり、火災保険は適用される？</span></a>
+          <a class="qlink" href="https://vimeo.com/1045936474/781436b08b" target="_blank" onclick="event.stopPropagation()"><span class="qdot"></span><span class="qlabel">008 認定された保険、支払い後に返還請求されることはある？</span></a>
+          <a class="qlink" href="https://vimeo.com/1045936495/b2296922ba" target="_blank" onclick="event.stopPropagation()"><span class="qdot"></span><span class="qlabel">009 地震保険、一部補修だけで次回申請できる？</span></a>
+          <a class="qlink" href="https://vimeo.com/1045936505/ab276eab69" target="_blank" onclick="event.stopPropagation()"><span class="qdot"></span><span class="qlabel">010 保険申請に必要な業者の見積記載を断られたときの対処法は？</span></a>
+          <a class="qlink" href="https://vimeo.com/1057004024/6ef18a9c9f" target="_blank" onclick="event.stopPropagation()"><span class="qdot"></span><span class="qlabel">011 地震保険の損害調査レベル1〜4、どう違う？</span></a>
+          <a class="qlink" href="https://vimeo.com/1057004036/291cbf0a95" target="_blank" onclick="event.stopPropagation()"><span class="qdot"></span><span class="qlabel">012 新築物件でも保険申請する機会はあるの？</span></a>
+          <a class="qlink" href="https://vimeo.com/1057004039/83b56ba1c7" target="_blank" onclick="event.stopPropagation()"><span class="qdot"></span><span class="qlabel">013 築浅RCマンション、地震保険は必要？</span></a>
+          <a class="qlink" href="https://vimeo.com/1063788381/3a06ec306e" target="_blank" onclick="event.stopPropagation()"><span class="qdot"></span><span class="qlabel">014 電気温水器の部品供給終了、機械的事故特約は使える？</span></a>
+          <a class="qlink" href="https://vimeo.com/1063788394/767c2819f8" target="_blank" onclick="event.stopPropagation()"><span class="qdot"></span><span class="qlabel">015 築古の天井からの水漏れ、保険請求できるケースは？</span></a>
+          <a class="qlink" href="https://vimeo.com/1063808119/96269c773e" target="_blank" onclick="event.stopPropagation()"><span class="qdot"></span><span class="qlabel">016 事業用建物の地震保険、居住用と同じ扱い？</span></a>
+          <a class="qlink" href="https://vimeo.com/1063808129/1c4fa7abcf" target="_blank" onclick="event.stopPropagation()"><span class="qdot"></span><span class="qlabel">017 同じ物件の保険申請、保険会社で結果が正反対に？</span></a>
+          <div class="sublabel">🎬 セミナーアーカイブ 2026年</div>
+          <a class="qlink" href="https://vimeo.com/1199205516/f6ed0c8b16" target="_blank" onclick="event.stopPropagation()"><span class="qdot"></span><span class="qlabel">2605 AI活用セミナー第2回</span><span class="qtag qt-new">最新</span></a>
+          <a class="qlink" href="https://vimeo.com/1199216218/41ce28fec7" target="_blank" onclick="event.stopPropagation()"><span class="qdot"></span><span class="qlabel">2605 AI活用セミナー第1回</span></a>
+          <a class="qlink" href="https://vimeo.com/1194950226/611c70d53e" target="_blank" onclick="event.stopPropagation()"><span class="qdot"></span><span class="qlabel">2605 地震保険セミナー</span></a>
+          <a class="qlink" href="https://vimeo.com/1194911254/45ae12f180" target="_blank" onclick="event.stopPropagation()"><span class="qdot"></span><span class="qlabel">2605 戸建てマスタリー第二弾（アマン講師）</span></a>
+          <a class="qlink" href="https://vimeo.com/1188757572/57a330b5f0" target="_blank" onclick="event.stopPropagation()"><span class="qdot"></span><span class="qlabel">2605 売却特化戦略シリーズ第二弾</span></a>
+          <a class="qlink" href="https://vimeo.com/1192796868/3ef19860d5" target="_blank" onclick="event.stopPropagation()"><span class="qdot"></span><span class="qlabel">2604 学長壁打ち会</span></a>
+          <a class="qlink" href="https://vimeo.com/1190399994/f4d9c007e5" target="_blank" onclick="event.stopPropagation()"><span class="qdot"></span><span class="qlabel">2604 戸建てマスタリー第一弾（アマン講師）</span></a>
+          <a class="qlink" href="https://vimeo.com/1184689150/13634565ee" target="_blank" onclick="event.stopPropagation()"><span class="qdot"></span><span class="qlabel">2604 売却特化戦略シリーズ第一弾【売却×融資】</span></a>
+          <a class="qlink" href="https://vimeo.com/1184521285/d5879566cd" target="_blank" onclick="event.stopPropagation()"><span class="qdot"></span><span class="qlabel">2604 MJ流！！爆速拡大の法則</span></a>
+          <a class="qlink" href="https://vimeo.com/1186685170/8f58552d48" target="_blank" onclick="event.stopPropagation()"><span class="qdot"></span><span class="qlabel">2603 フェニックス大家 第3章</span></a>
+          <a class="qlink" href="https://vimeo.com/1181142186/e40f639bbe" target="_blank" onclick="event.stopPropagation()"><span class="qdot"></span><span class="qlabel">2603 満室経営の科学</span></a>
+          <a class="qlink" href="https://vimeo.com/1173922677/24b4f2bd9f" target="_blank" onclick="event.stopPropagation()"><span class="qdot"></span><span class="qlabel">2603 共同セミナー第3弾 真・火災保険セミナー</span></a>
+          <a class="qlink" href="https://vimeo.com/1173760772/af6c9aa4f7" target="_blank" onclick="event.stopPropagation()"><span class="qdot"></span><span class="qlabel">2603 共同セミナー第2弾 脳内妄想破壊術</span></a>
+          <a class="qlink" href="https://vimeo.com/1172116254/9109ff9122" target="_blank" onclick="event.stopPropagation()"><span class="qdot"></span><span class="qlabel">2602 共同セミナー第1弾 科学的拡大戦略</span></a>
+          <a class="qlink" href="https://vimeo.com/1169831253/47b12ee061" target="_blank" onclick="event.stopPropagation()"><span class="qdot"></span><span class="qlabel">2602 Mちゃん保険活用セミナー</span></a>
+          <a class="qlink" href="https://vimeo.com/1169267477/837d679b61" target="_blank" onclick="event.stopPropagation()"><span class="qdot"></span><span class="qlabel">2602 戸建てゼロ円ゲットセミナー 第一章</span></a>
+          <a class="qlink" href="https://vimeo.com/1169252471/4d46e1701e" target="_blank" onclick="event.stopPropagation()"><span class="qdot"></span><span class="qlabel">2602 フェニックス大家 第二章【新築編】</span></a>
+          <a class="qlink" href="https://vimeo.com/1162047820/0d5e8b45dd" target="_blank" onclick="event.stopPropagation()"><span class="qdot"></span><span class="qlabel">2602 学長壁打ち会</span></a>
+          <a class="qlink" href="https://vimeo.com/1167224999/a85a9b309b" target="_blank" onclick="event.stopPropagation()"><span class="qdot"></span><span class="qlabel">2601 フェニックス大家 第一章【新築編】</span></a>
+          <a class="qlink" href="https://vimeo.com/1158780225/20c3bb96b8" target="_blank" onclick="event.stopPropagation()"><span class="qdot"></span><span class="qlabel">2601 EV充電ステーション投資セミナー</span></a>
+          <a class="qlink" href="https://vimeo.com/1153189216/cac093542f" target="_blank" onclick="event.stopPropagation()"><span class="qdot"></span><span class="qlabel">2601 アカデミー活用方法＆学長なんでも相談</span></a>
+          <div class="sublabel">🎬 セミナーアーカイブ 2025年</div>
+          <a class="qlink" href="https://vimeo.com/1144213502/8d8774b078" target="_blank" onclick="event.stopPropagation()"><span class="qdot"></span><span class="qlabel">2512 水漏れセミナー</span></a>
+          <a class="qlink" href="https://vimeo.com/1141621858/a702be974f" target="_blank" onclick="event.stopPropagation()"><span class="qdot"></span><span class="qlabel">2511 マイル・旅費規定活用セミナー</span></a>
+          <a class="qlink" href="https://vimeo.com/1135750663/d57835cbb0" target="_blank" onclick="event.stopPropagation()"><span class="qdot"></span><span class="qlabel">2511 COSOJIセミナー</span></a>
+          <a class="qlink" href="https://vimeo.com/1134624119/476b9c8919" target="_blank" onclick="event.stopPropagation()"><span class="qdot"></span><span class="qlabel">2511 アメックスビジネスの知られざる機能</span></a>
+          <a class="qlink" href="https://vimeo.com/1134553199/7a268977ee" target="_blank" onclick="event.stopPropagation()"><span class="qdot"></span><span class="qlabel">2511 学長壁打ち会</span></a>
+          <a class="qlink" href="https://vimeo.com/1132785377/4f7efea953" target="_blank" onclick="event.stopPropagation()"><span class="qdot"></span><span class="qlabel">2510 業界初登場！探偵大家セミナー</span></a>
+          <a class="qlink" href="https://vimeo.com/1130173946/532dd8a7aa" target="_blank" onclick="event.stopPropagation()"><span class="qdot"></span><span class="qlabel">2510 タイミー活用セミナー</span></a>
+          <a class="qlink" href="https://vimeo.com/1109921212/361adf31bb" target="_blank" onclick="event.stopPropagation()"><span class="qdot"></span><span class="qlabel">2508 地震保険セミナー</span></a>
+          <a class="qlink" href="https://vimeo.com/1127083614/c27bbfb0f3" target="_blank" onclick="event.stopPropagation()"><span class="qdot"></span><span class="qlabel">2505 大物投資家も実践する投資術</span></a>
+          <a class="qlink" href="https://vimeo.com/1153180870/cf667efb72" target="_blank" onclick="event.stopPropagation()"><span class="qdot"></span><span class="qlabel">2504 エレベーター資金調達＆マイル活用</span></a>
+          <a class="qlink" href="https://vimeo.com/1070415765/3276c39923" target="_blank" onclick="event.stopPropagation()"><span class="qdot"></span><span class="qlabel">2503 天命セミナー</span></a>
+          <a class="qlink" href="https://vimeo.com/1063255191/e09ddb15fa" target="_blank" onclick="event.stopPropagation()"><span class="qdot"></span><span class="qlabel">2503 孤独死対策セミナー</span></a>
+          <a class="qlink" href="https://vimeo.com/1061510790/1b49955172" target="_blank" onclick="event.stopPropagation()"><span class="qdot"></span><span class="qlabel">2502 マイクロ法人節税セミナー</span></a>
+          <a class="qlink" href="https://vimeo.com/1046346659/affbaa9e27" target="_blank" onclick="event.stopPropagation()"><span class="qdot"></span><span class="qlabel">2501 石渡浩氏コラボセミナー</span></a>
+          <a class="qlink" href="https://vimeo.com/1041370205/050f44ab2d" target="_blank" onclick="event.stopPropagation()"><span class="qdot"></span><span class="qlabel">2501 新春セミナー</span></a>
+          <div class="sublabel">🎬 セミナーアーカイブ 2024年</div>
+          <a class="qlink" href="https://vimeo.com/1041183667/e4a09e98e6" target="_blank" onclick="event.stopPropagation()"><span class="qdot"></span><span class="qlabel">2412 保険加入の方法について</span></a>
+          <a class="qlink" href="https://vimeo.com/1041183247/05c27046ad" target="_blank" onclick="event.stopPropagation()"><span class="qdot"></span><span class="qlabel">2412 借金に関する真実</span></a>
+          <a class="qlink" href="https://vimeo.com/1034799957/c77bb318b3" target="_blank" onclick="event.stopPropagation()"><span class="qdot"></span><span class="qlabel">2411 報告書・見積書の作成方法（アンコール）</span></a>
+          <a class="qlink" href="https://vimeo.com/1031563331/891c4d0204" target="_blank" onclick="event.stopPropagation()"><span class="qdot"></span><span class="qlabel">2411 入居者保険セミナー</span></a>
+          <a class="qlink" href="https://vimeo.com/1028103145/79326ddd30" target="_blank" onclick="event.stopPropagation()"><span class="qdot"></span><span class="qlabel">2410 見積・報告書の作り方</span></a>
+          <a class="qlink" href="https://vimeo.com/1028102245/6ec38a2182" target="_blank" onclick="event.stopPropagation()"><span class="qdot"></span><span class="qlabel">2409 火災保険活用セミナー</span></a>
+          <a class="qlink" href="https://vimeo.com/1028102866/eca79049d8" target="_blank" onclick="event.stopPropagation()"><span class="qdot"></span><span class="qlabel">2409 保険金請求を成功させるための戦略ガイド</span></a>
+          <a class="qlink" href="https://vimeo.com/1028101975/c87e87194b" target="_blank" onclick="event.stopPropagation()"><span class="qdot"></span><span class="qlabel">2408 さらなる資金調達のために</span></a>
+          <a class="qlink" href="https://vimeo.com/1002149788/ae391e037d" target="_blank" onclick="event.stopPropagation()"><span class="qdot"></span><span class="qlabel">2408 給排水設備からの水漏れセミナー</span></a>
+          <a class="qlink" href="https://vimeo.com/992013733/ff16e764d0" target="_blank" onclick="event.stopPropagation()"><span class="qdot"></span><span class="qlabel">2406 風雪災セミナー</span></a>
+          <a class="qlink" href="https://vimeo.com/949804419/4637ac35b7" target="_blank" onclick="event.stopPropagation()"><span class="qdot"></span><span class="qlabel">2403 破汚損活用有効セミナー</span></a>
+          <a class="qlink" href="https://vimeo.com/949802877/0a87f23f89" target="_blank" onclick="event.stopPropagation()"><span class="qdot"></span><span class="qlabel">2402 地震保険活用セミナー</span></a>
+          <a class="qlink" href="https://vimeo.com/949791437/d31675b555" target="_blank" onclick="event.stopPropagation()"><span class="qdot"></span><span class="qlabel">2402 火災保険セミナー</span></a>
+        </div>
+      </div>
+
+      <!-- 寺子屋大家会 -->
+      <div class="qcard" id="c-tera" onclick="toggle('c-tera')">
+        <div class="qcard-art"><div class="qcard-art-inner"></div></div>
+        <div class="qcard-hdr">
+          <div class="qcard-icon">🎓</div>
+          <div class="qcard-texts">
+            <div class="qcard-name">寺子屋大家会</div>
+            <div class="qcard-desc">学び合い、支え合う大家の学校</div>
+          </div>
+          <div class="qcard-right">
+            <span class="badge b-yt">YouTube</span>
+            <span class="qcard-arrow">›</span>
+          </div>
+        </div>
+        <div class="qcard-body">
+          <a class="qlink" href="https://youtu.be/upTDONEdFzg" target="_blank" onclick="event.stopPropagation()"><span class="qdot"></span><span class="qlabel">2026/5/16 三山さん &amp; AGビジネスサポート</span><span class="qtag qt-new">最新</span></a>
+          <a class="qlink" href="https://youtu.be/_CfB-x4NBsQ" target="_blank" onclick="event.stopPropagation()"><span class="qdot"></span><span class="qlabel">2026/4/4 MDさんセミナー</span></a>
+          <a class="qlink" href="https://youtu.be/WQygvwvNZbc" target="_blank" onclick="event.stopPropagation()"><span class="qdot"></span><span class="qlabel">2026/2/7 バランス大家さんセミナー</span></a>
+          <a class="qlink" href="https://youtu.be/Sq-wksA7-9E" target="_blank" onclick="event.stopPropagation()"><span class="qdot"></span><span class="qlabel">2026/1/6 新地さんセミナー</span></a>
+        </div>
+      </div>
+
+      <!-- 富田塾 -->
+      <div class="qcard" id="c-tomita" onclick="toggle('c-tomita')">
+        <div class="qcard-art"><div class="qcard-art-inner"></div></div>
+        <div class="qcard-hdr">
+          <div class="qcard-icon">📊</div>
+          <div class="qcard-texts">
+            <div class="qcard-name">富田塾</div>
+            <div class="qcard-desc">不動産投資の基礎と応用</div>
+          </div>
+          <div class="qcard-right">
+            <span class="badge b-fb">Facebook</span>
+            <span class="qcard-arrow">›</span>
+          </div>
+        </div>
+        <div class="qcard-body">
+          <a class="qlink" href="https://www.facebook.com/groups/1329662058222551?locale=ja_JP" target="_blank" onclick="event.stopPropagation()"><span class="qdot"></span><span class="qlabel">Facebookグループ</span><span class="qtag qt-pri">メイン</span></a>
+          <a class="qlink" href="https://meet.google.com/vkb-pzby-mgg" target="_blank" onclick="event.stopPropagation()"><span class="qdot"></span><span class="qlabel">週次報告会 — 昼の部（12:30〜14:00）</span><span class="qtag qt-nml">毎週月</span></a>
+          <a class="qlink" href="https://meet.google.com/arp-mmiz-iiy" target="_blank" onclick="event.stopPropagation()"><span class="qdot"></span><span class="qlabel">週次報告会 — 夜の部（21:00〜22:30）</span><span class="qtag qt-nml">毎週月</span></a>
+        </div>
+      </div>
+
+      <!-- ドクター不動産 -->
+      <a class="qcard-direct" href="https://www.facebook.com/groups/feed/?locale=ja_JP" target="_blank">
+        <div class="qcard-art"><div class="qcard-art-inner"></div></div>
+        <div class="qd-icon">👨‍⚕️</div>
+        <div class="qd-texts">
+          <div class="qd-name">ドクター不動産</div>
+          <div class="qd-desc">診断力で物件を見抜く</div>
+        </div>
+        <div class="qd-right"><span class="badge b-fb">Facebook</span><span style="color:var(--text3);font-size:14px;">›</span></div>
+      </a>
+
+      <!-- バランス大家会 -->
+      <a class="qcard-direct" href="https://www.facebook.com/groups/618767880240718?locale=ja_JP" target="_blank">
+        <div class="qcard-art"><div class="qcard-art-inner"></div></div>
+        <div class="qd-icon">⚖️</div>
+        <div class="qd-texts">
+          <div class="qd-name">バランス大家会　BOB</div>
+          <div class="qd-desc">バランス感覚で長期安定を実現</div>
+        </div>
+        <div class="qd-right"><span class="badge b-fb">Facebook</span><span style="color:var(--text3);font-size:14px;">›</span></div>
+      </a>
+
+      <!-- 楽町不動産 -->
+      <div class="qcard" id="c-raku" onclick="toggle('c-raku')">
+        <div class="qcard-art"><div class="qcard-art-inner"></div></div>
+        <div class="qcard-hdr">
+          <div class="qcard-icon">🏗️</div>
+          <div class="qcard-texts">
+            <div class="qcard-name">楽町不動産</div>
+            <div class="qcard-desc">楽しく町をつくる不動産</div>
+          </div>
+          <div class="qcard-right">
+            <span class="badge b-web">Web</span>
+            <span class="qcard-arrow">›</span>
+          </div>
+        </div>
+        <div class="qcard-body">
+          <a class="qlink" href="https://www.rakumachi.jp/news/video-top" target="_blank" onclick="event.stopPropagation()"><span class="qdot"></span><span class="qlabel">動画コンテンツ</span><span class="qtag qt-pri">優先</span></a>
+          <a class="qlink" href="https://www.rakumachi.jp/news/practical" target="_blank" onclick="event.stopPropagation()"><span class="qdot"></span><span class="qlabel">実践コラム（有料優先）</span></a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- 02 Market Intelligence -->
+  <div class="sec">
+    <div class="sec-hdr">
+      <span class="sec-num">02</span>
+      <div class="sec-titles">
+        <div class="sec-title-en">Market Intelligence</div>
+        <div class="sec-title-jp">マーケットインテリジェンス</div>
+      </div>
+      <div class="sec-hdr-line"></div>
+    </div>
+    <div class="cards">
+      <a class="qcard-direct" href="https://newspicks.com/programs/" target="_blank">
+        <div class="qcard-art"><div class="qcard-art-inner"></div></div>
+        <div class="qd-icon">⚡</div>
+        <div class="qd-texts">
+          <div class="qd-name">ニューズピックス</div>
+          <div class="qd-desc">最新ニュースで市場を先取り</div>
+        </div>
+        <div class="qd-right"><span class="badge b-web">Web</span><span style="color:var(--text3);font-size:14px;">›</span></div>
+      </a>
+    </div>
+  </div>
+
+  <!-- 03 Instagram Skill Tree -->
+  <div class="sec">
+    <div class="sec-hdr">
+      <span class="sec-num">03</span>
+      <div class="sec-titles">
+        <div class="sec-title-en">Instagram — Skill Tree</div>
+        <div class="sec-title-jp">インスタグラム スキルツリー</div>
+      </div>
+      <div class="sec-hdr-line"></div>
+    </div>
+    <div class="cards">
+
+      <!-- SAKIYOMI 先読み -->
+      <div class="qcard" id="c-saki" onclick="toggle('c-saki')">
+        <div class="qcard-art"><div class="qcard-art-inner"></div></div>
+        <div class="qcard-hdr">
+          <div class="qcard-icon">🔮</div>
+          <div class="qcard-texts">
+            <div class="qcard-name">SAKIYOMI 先読み</div>
+            <div class="qcard-desc">アルゴリズムを先読みする思考力</div>
+          </div>
+          <div class="qcard-right">
+            <span class="badge b-line">LINE</span>
+            <span class="qcard-arrow">›</span>
+          </div>
+        </div>
+        <div class="qcard-body">
+          <a class="qlink" href="https://line.me/R/ti/p/@879wbupu" target="_blank" onclick="event.stopPropagation()"><span class="qdot"></span><span class="qlabel">LINE（SAKIYOMIくん）</span><span class="qtag qt-pri">メイン</span></a>
+          <a class="qlink" href="https://drive.google.com/drive/folders/1REVlAfgIlw3wxEFzh6m0Ew7uVndCUoJG" target="_blank" onclick="event.stopPropagation()"><span class="qdot"></span><span class="qlabel">先読みドライブ</span></a>
+          <a class="qlink" href="https://sakiyomi.notion.site/2026-31004b6faa2380cda9bcf2fd54544ce8" target="_blank" onclick="event.stopPropagation()"><span class="qdot"></span><span class="qlabel">お役立ち資料（Notion）</span></a>
+          <a class="qlink" href="https://sakiyomi.notion.site/SAKIYOMI-Q-A-16704b6faa2380f29b3ad1265afe106e" target="_blank" onclick="event.stopPropagation()"><span class="qdot"></span><span class="qlabel">FAQ（Notion）</span></a>
+          <a class="qlink" href="https://drive.google.com/drive/folders/1Go7zZtcpwXCxy9M7FM_ehjesbSHI6TPu" target="_blank" onclick="event.stopPropagation()"><span class="qdot"></span><span class="qlabel">スクールガイド</span></a>
+        </div>
+      </div>
+
+      <!-- SAKIYOMI 動画・GPTs -->
+      <div class="qcard" id="c-sakiv" onclick="toggle('c-sakiv')">
+        <div class="qcard-art"><div class="qcard-art-inner"></div></div>
+        <div class="qcard-hdr">
+          <div class="qcard-icon">🎬</div>
+          <div class="qcard-texts">
+            <div class="qcard-name">SAKIYOMI 動画講義・GPTs</div>
+            <div class="qcard-desc">動画×AIで学びを加速させる</div>
+          </div>
+          <div class="qcard-right">
+            <span class="badge b-gpt">GPTs</span>
+            <span class="qcard-arrow">›</span>
+          </div>
+        </div>
+        <div class="qcard-body">
+          <a class="qlink" href="https://lstep.app/HIOMPFU" target="_blank" onclick="event.stopPropagation()"><span class="qdot"></span><span class="qlabel">動画講義一覧</span><span class="qtag qt-pri">優先</span></a>
+          <a class="qlink" href="https://lstep.app/LDTQnIY" target="_blank" onclick="event.stopPropagation()"><span class="qdot"></span><span class="qlabel">編集基礎編</span></a>
+          <a class="qlink" href="https://lstep.app/dtggBm8" target="_blank" onclick="event.stopPropagation()"><span class="qdot"></span><span class="qlabel">オーバーレイ編</span></a>
+          <a class="qlink" href="https://lstep.app/xE4L94W" target="_blank" onclick="event.stopPropagation()"><span class="qdot"></span><span class="qlabel">入会特典：インスタ運用攻略セット（32項目）</span><span class="qtag qt-pri">保存済</span></a>
+          <div class="sublabel">🤖 GPTs</div>
+          <a class="qlink" href="https://lstep.app/lqpwceI" target="_blank" onclick="event.stopPropagation()"><span class="qdot"></span><span class="qlabel">コンセプトGPTs</span></a>
+          <a class="qlink" href="https://lstep.app/Du9Iw6m?openExternalBrowser=1" target="_blank" onclick="event.stopPropagation()"><span class="qdot"></span><span class="qlabel">トークリール台本添削GPTs</span></a>
+          <a class="qlink" href="https://lstep.app/VchChvd?openExternalBrowser=1" target="_blank" onclick="event.stopPropagation()"><span class="qdot"></span><span class="qlabel">一人称vlog台本添削GPTs</span></a>
+          <a class="qlink" href="https://lstep.app/ZMC6S5L?openExternalBrowser=1" target="_blank" onclick="event.stopPropagation()"><span class="qdot"></span><span class="qlabel">二項対立台本添削GPTs</span></a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</main>
+
+</div><!-- /view-board -->
+
+<!-- ═══ VIEW: LIBRARY ═══ -->
+<div class="view" id="view-library">
+  <div class="lib-wrap">
+    <div class="lib-stat" id="libStat">読み込み中...</div>
+    <div class="lib-chips" id="libChips"></div>
+    <div class="lib-list" id="libList"></div>
+  </div>
+</div><!-- /view-library -->
+
+<!-- ═══ FOOTER ═══ -->
+<footer class="footer">
+  <div class="ft-portrait">
+    <img src="image-1781108859882.png" alt="AKKEY">
+  </div>
+  <div class="ft-player">
+    <div class="ft-name">AKKEY</div>
+    <div class="ft-rank-row">
+      <span class="ft-rank-label">RANK</span>
+      <span class="ft-rank" id="ftRank">E</span>
+    </div>
+  </div>
+  <div class="ft-div"></div>
+  <div class="ft-exp">
+    <div class="ft-exp-row">
+      <span class="ft-next">NEXT RANK</span>
+      <span class="ft-next-rank" id="ftNextRank">D</span>
+    </div>
+    <div class="ft-exp-bar"><div class="ft-exp-fill" id="ftExpFill" style="width:0%"></div></div>
+    <div class="ft-exp-num" id="ftExpNum">0 / 100 EXP</div>
+  </div>
+  <div class="ft-div2"></div>
+  <div class="ft-mission">
+    <div class="ft-m-label">Today's Mission</div>
+    <div class="ft-m-text">学習を3つ記録する</div>
+    <div class="ft-m-reward">
+      <span class="ft-m-rew-text">REWARD : +150 EXP</span>
+      <span class="ft-m-prog" id="missionProg">0 / 3</span>
+    </div>
+  </div>
+  <div class="ft-div3"></div>
+  <div class="ft-streak">
+    <div class="ft-streak-icon">🔥</div>
+    <div class="ft-streak-num" id="streakNum">0</div>
+    <div class="ft-streak-label">DAYS</div>
+  </div>
+</footer>
+
+<script>
+// ── 定数 ──
+const DAYS_JP = ['SUN','MON','TUE','WED','THU','FRI','SAT'];
+
+// ステータス定義（id=サブスク, 表示名, アイコン, barクラス, lvクラス, 関連キーワード）
+const STATS = [
+  { id:'mj',        name:'MJサロン',      icon:'🏢', bar:'fill-re', lv:'lv-re', keys:['mj','客付け','管理会社','入居','原状回復'] },
+  { id:'terakoya',  name:'寺子屋大家会',  icon:'🏯', bar:'fill-go', lv:'lv-go', keys:['寺子屋','大家会','仲間','初心者'] },
+  { id:'tomita',    name:'富田塾',        icon:'🎓', bar:'fill-gr', lv:'lv-gr', keys:['富田','融資','銀行','規模拡大','出口','法人','与信'] },
+  { id:'rakumachi', name:'楽待',          icon:'🏠', bar:'fill-bl', lv:'lv-bl', keys:['楽待','楽町','物件','利回り','収益物件'] },
+  { id:'newspicks', name:'NewsPicks',     icon:'⚡', bar:'fill-cy', lv:'lv-cy', keys:['newspicks','ニューズピックス','経済','金利','市場','ニュース','株'] },
+  { id:'sakiyomi',  name:'SAKIYOMI',      icon:'📱', bar:'fill-pu', lv:'lv-pu', keys:['sakiyomi','先読み','instagram','インスタ','reels','台本','コンセプト'] },
+];
+
+// ランク閾値（総合EXP）
+const RANKS = [
+  { rank:'E',  min:0,    next:50   },
+  { rank:'D',  min:50,   next:150  },
+  { rank:'C',  min:150,  next:350  },
+  { rank:'B',  min:350,  next:700  },
+  { rank:'A',  min:700,  next:1200 },
+  { rank:'S',  min:1200, next:2000 },
+  { rank:'S+', min:2000, next:3000 },
+  { rank:'SS', min:3000, next:null },
+];
+
+// Lv閾値（個別EXP）: Lv0=0, Lv1=20, Lv2=50, Lv3=90 … +10n²
+function expForLevel(lv) {
+  let t = 0;
+  for(let i=1;i<=lv;i++) t += 10 + i*10;
+  return t;
+}
+function calcLevel(exp) {
+  let lv = 0;
+  while(expForLevel(lv+1) <= exp) lv++;
+  return lv;
+}
+
+// ── localStorage ──
+function loadStats() {
+  const s = localStorage.getItem('statsExp');
+  if(!s) return Object.fromEntries(STATS.map(st=>[st.id,0]));
+  return JSON.parse(s);
+}
+function saveStats(data) { localStorage.setItem('statsExp', JSON.stringify(data)); }
+
+// ── 日付 ──
+const D = new Date();
+document.getElementById('hdrDate').textContent =
+  `${D.getFullYear()}.${String(D.getMonth()+1).padStart(2,'0')}.${String(D.getDate()).padStart(2,'0')} ${DAYS_JP[D.getDay()]}`;
+
+// ── デイリーリセット ──
+const todayStr = D.toDateString();
+if(localStorage.getItem('lastDate') !== todayStr) {
+  localStorage.setItem('lastDate', todayStr);
+  localStorage.setItem('missionToday','0');
+}
+
+// ── ストリーク ──
+let streak = parseInt(localStorage.getItem('streak')||'0');
+document.getElementById('streakNum').textContent = streak;
+
+// ── ミッション ──
+let missionCount = parseInt(localStorage.getItem('missionToday')||'0');
+function updateMission() {
+  document.getElementById('missionProg').textContent = `${Math.min(missionCount,3)} / 3`;
+}
+updateMission();
+
+// ── ステータス描画 ──
+function renderStats() {
+  const data = loadStats();
+  const grid = document.getElementById('statGrid');
+  grid.innerHTML = '';
+  STATS.forEach(st => {
+    const exp = data[st.id] || 0;
+    const lv  = calcLevel(exp);
+    const cur = expForLevel(lv);
+    const nxt = expForLevel(lv+1);
+    const pct = nxt > cur ? Math.round((exp - cur) / (nxt - cur) * 100) : 100;
+    grid.innerHTML += `
+      <div class="stat-card">
+        <div class="stat-top">
+          <div class="stat-icon">${st.icon}</div>
+          <div class="stat-name">${st.name}</div>
+          <div class="stat-lv ${st.lv}">LV.${lv}</div>
+        </div>
+        <div class="stat-bar"><div class="stat-fill ${st.bar}" style="width:${pct}%"></div></div>
+        <div class="stat-exp">${exp} / ${nxt} EXP</div>
+      </div>`;
+  });
+}
+renderStats();
+
+// ── フッター描画 ──
+function renderFooter() {
+  const data = loadStats();
+  const totalExp = Object.values(data).reduce((a,b)=>a+b,0);
+  const rankInfo = RANKS.slice().reverse().find(r => totalExp >= r.min) || RANKS[0];
+  const nextRank = RANKS[RANKS.indexOf(rankInfo)+1];
+  const pct = nextRank
+    ? Math.round((totalExp - rankInfo.min) / (rankInfo.next - rankInfo.min) * 100)
+    : 100;
+  document.getElementById('ftRank').textContent = rankInfo.rank;
+  document.getElementById('ftNextRank').textContent = nextRank ? nextRank.rank : 'MAX';
+  document.getElementById('ftExpFill').style.width = pct + '%';
+  document.getElementById('ftExpNum').textContent =
+    `${totalExp} / ${rankInfo.next ?? totalExp} EXP`;
+}
+renderFooter();
+
+// ── アコーディオン ──
+function toggle(id) {
+  document.getElementById(id).classList.toggle('open');
+}
+
+// ── 記録 ──
+// スマホからアクセスした時も正しいサーバーを向くよう、ページを開いたホストを使う
+const API_BASE = `${location.protocol}//${location.hostname}:8765`;
+let todayRecorded = false;
+let apiAvailable = false;
+
+// API死活確認
+fetch(`${API_BASE}/api/stats`).then(()=>{ apiAvailable=true; loadServerStats(); }).catch(()=>{});
+
+// サーバーのEXPでステータスを上書き
+function loadServerStats() {
+  fetch(`${API_BASE}/api/stats`).then(r=>r.json()).then(data => {
+    saveStats(data);
+    renderStats();
+    renderFooter();
+  }).catch(()=>{});
+}
+
+async function recordLearning() {
+  const v = document.getElementById('learnInput').value.trim();
+  if(!v) return;
+
+  const msg = document.getElementById('capMsg');
+  msg.style.display = 'block';
+  msg.style.color = 'var(--cyan)';
+  msg.textContent = '⏳ 記録中...';
+
+  if(apiAvailable) {
+    // ── バックエンドに送信（Claude分析あり）──
+    try {
+      const res = await fetch(`${API_BASE}/api/record`, {
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({text: v})
+      });
+      const d = await res.json();
+
+      // 中身が取れず記録されなかった場合（ゴミ蓄積防止）
+      if(d.ok === false){
+        msg.style.color = 'var(--gold)';
+        msg.textContent = '⚠ ' + (d.message || '記録できませんでした');
+        setTimeout(()=>{ msg.style.display='none'; }, 7000);
+        return;
+      }
+
+      document.getElementById('learnInput').value = '';
+
+      // サーバーから最新EXPを取得して反映
+      loadServerStats();
+
+      // ミッション
+      missionCount = Math.min(missionCount+1, 3);
+      localStorage.setItem('missionToday', missionCount);
+      updateMission();
+
+      // ストリーク
+      if(!todayRecorded) {
+        todayRecorded = true;
+        streak++;
+        localStorage.setItem('streak', streak);
+        document.getElementById('streakNum').textContent = streak;
+      }
+
+      const expText = Object.entries(d.exp_map).map(([k,v])=>{
+        const name = STATS.find(s=>s.id===k)?.name || k;
+        return `${name} +${v}`;
+      }).join(' / ');
+
+      msg.style.color = 'var(--green)';
+      msg.innerHTML = `✓ <strong>${d.source}</strong> — ${d.insight || d.summary}<br><span style="font-size:9px;color:var(--gold)">${expText}</span>`;
+      setTimeout(()=>{ msg.style.display='none'; }, 5000);
+
+      // ライブラリを開いていたら更新
+      if(libLoaded) loadLibrary();
+    } catch(e) {
+      msg.style.color = 'var(--red3)';
+      msg.textContent = '✗ 通信エラー。app.py が起動していますか？';
+      setTimeout(()=>{ msg.style.display='none'; }, 4000);
+    }
+  } else {
+    // ── APIなし：ローカルのみ（フォールバック）──
+    document.getElementById('learnInput').value = '';
+    const lower = v.toLowerCase();
+    const data = loadStats();
+    let gained = {};
+    STATS.forEach(st => {
+      if(st.keys.some(k=>lower.includes(k.toLowerCase()))) {
+        data[st.id] = (data[st.id]||0) + 15;
+        gained[st.name] = 15;
+      }
+    });
+    if(Object.keys(gained).length === 0) {
+      STATS.forEach(st=>{ data[st.id]=(data[st.id]||0)+5; });
+      gained = {'全ステータス': 5};
+    }
+    saveStats(data);
+    renderStats();
+    renderFooter();
+    missionCount = Math.min(missionCount+1, 3);
+    localStorage.setItem('missionToday', missionCount);
+    updateMission();
+    if(!todayRecorded) {
+      todayRecorded = true;
+      streak++;
+      localStorage.setItem('streak', streak);
+      document.getElementById('streakNum').textContent = streak;
+    }
+    const gainedText = Object.entries(gained).map(([k,v])=>`${k} +${v}`).join(' / ');
+    msg.style.color = 'var(--green)';
+    msg.textContent = `✓ ${gainedText}（API未接続：ローカル記録のみ）`;
+    setTimeout(()=>{ msg.style.display='none'; }, 3000);
+  }
+}
+
+document.getElementById('learnInput').addEventListener('keydown', e => {
+  if(e.key === 'Enter') recordLearning();
+});
+
+// ═══════════════ ビュー切り替え ═══════════════
+const CAT_ACCENT = {
+  mj:'#ff4444', terakoya:'#e8b84b', tomita:'#39ff6e',
+  rakumachi:'#4a9eff', newspicks:'#00e5ff', sakiyomi:'#b44aff'
+};
+let libLoaded = false;
+let libFilter = 'all';
+let libData = [];
+
+function switchView(view) {
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.getElementById('view-'+view).classList.add('active');
+  document.querySelectorAll('.tab').forEach(t=>
+    t.classList.toggle('active', t.dataset.tab===view));
+  // サイドバーアイコンも同期
+  document.querySelectorAll('.sb-icon').forEach(i=>i.classList.remove('active'));
+  const sbMap = {board:'スキルボード', library:'ライブラリ'};
+  document.querySelectorAll('.sb-icon').forEach(i=>{
+    if(i.title===sbMap[view]) i.classList.add('active');
+  });
+  if(view==='library') loadLibrary();
+  window.scrollTo(0,0);
+}
+
+// サイドバーアイコンからも切替
+document.querySelectorAll('.sb-icon').forEach(i=>{
+  if(i.title==='スキルボード') i.onclick=()=>switchView('board');
+  if(i.title==='ライブラリ')   i.onclick=()=>switchView('library');
+});
+
+function escapeHtml(s){
+  return (s||'').replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+}
+
+// 【見出し】→小見出しブロック、**強調**→太字 にリッチ整形（改行はpre-wrapで反映）
+function fmtRich(text){
+  let h = escapeHtml(text || '');
+  h = h.replace(/\*\*([^*]+)\*\*/g, '<b class="rich-b">$1</b>');
+  h = h.replace(/【([^】]+)】/g, '<span class="rich-h">$1</span>');
+  return h;
+}
+
+// その学習がどのカテゴリに属するか（exp_mapのキー）
+function recCats(rec){
+  let m = {};
+  try { m = JSON.parse(rec.exp_map||'{}'); } catch(e){}
+  // 全ステータス均等(+5)＝汎用 → 主要カテゴリ扱いしない
+  const vals = Object.values(m);
+  const isGeneric = vals.length===6 && vals.every(v=>v===vals[0]);
+  if(isGeneric) return [];
+  return Object.keys(m);
+}
+
+async function loadLibrary(){
+  document.getElementById('libStat').textContent = '読み込み中...';
+  try {
+    const res = await fetch(`${API_BASE}/api/learnings?limit=200`);
+    if(!res.ok) throw new Error('HTTP '+res.status);
+    libData = await res.json();
+    libLoaded = true;
+    apiAvailable = true;
+    renderLibrary();
+  } catch(e){
+    document.getElementById('libStat').textContent = 'API未接続：app.py を起動してください';
+    document.getElementById('libList').innerHTML =
+      '<div class="lib-empty">バックエンド接続後に学習履歴が表示されます<br>'+escapeHtml(String(e))+'</div>';
+    document.getElementById('libChips').innerHTML = '';
+  }
+}
+
+function renderLibrary(){
+  // カテゴリ別件数
+  const counts = Object.fromEntries(STATS.map(s=>[s.id,0]));
+  libData.forEach(r=>recCats(r).forEach(c=>{ if(c in counts) counts[c]++; }));
+
+  // チップ
+  const chips = document.getElementById('libChips');
+  let html = `<div class="chip ${libFilter==='all'?'active':''}" onclick="setFilter('all')">
+      ALL <span class="chip-ct">${libData.length}</span></div>`;
+  STATS.forEach(s=>{
+    html += `<div class="chip ${libFilter===s.id?'active':''}" onclick="setFilter('${s.id}')">
+        ${s.icon} ${s.name} <span class="chip-ct">${counts[s.id]}</span></div>`;
+  });
+  chips.innerHTML = html;
+
+  // フィルタ適用
+  const list = libFilter==='all'
+    ? libData
+    : libData.filter(r=>recCats(r).includes(libFilter));
+
+  document.getElementById('libStat').textContent =
+    `${list.length} RECORDS ${libFilter==='all'?'':'/ '+(STATS.find(s=>s.id===libFilter)?.name||'')}`;
+
+  const cont = document.getElementById('libList');
+  if(list.length===0){
+    cont.innerHTML = '<div class="lib-empty">この分野の記録はまだありません</div>';
+    return;
+  }
+
+  cont.innerHTML = list.map(r=>{
+    const cats = recCats(r);
+    const accent = cats.length ? CAT_ACCENT[cats[0]] : '#6a6a8a';
+    const catIcons = cats.map(c=>{
+      const st = STATS.find(s=>s.id===c);
+      return st ? `<span class="lcard-cat" title="${st.name}">${st.icon}</span>` : '';
+    }).join('');
+    let tags = [];
+    try { tags = JSON.parse(r.tags||'[]'); } catch(e){}
+    const tagsHtml = tags.map(t=>`<span class="lcard-tag">#${escapeHtml(t)}</span>`).join('');
+    const date = (r.created||'').slice(0,10);
+    const summaryText = r.summary || r.title || r.input || '';
+    const originalText = r.input || '';
+    const showOriginal = originalText && originalText !== summaryText;
+    const detailOriginal = showOriginal
+      ? `<div class="lcard-detail-label">ORIGINAL INPUT</div>
+         <div class="lcard-original">${escapeHtml(originalText)}</div>` : '';
+    const detailInsight = r.insight
+      ? `<div class="lcard-detail-label" style="margin-top:10px">💡 あっきーへの示唆</div>
+         <div class="lcard-detail-insight">${fmtRich(r.insight)}</div>` : '';
+    const detailAbstract = r.abstract
+      ? `<div class="lcard-detail-label" style="margin-top:10px">🔺 抽象化・原則</div>
+         <div class="lcard-detail-abstract">${fmtRich(r.abstract)}</div>` : '';
+    return `<div class="lcard" style="--accent:${accent}" data-cardid="${r.id||''}">
+      <div class="lcard-top">
+        <span class="lcard-src">${escapeHtml(r.source||'メモ')}</span>
+        <span class="lcard-date">${date}</span>
+        <span class="lcard-cats">${catIcons}</span>
+        <span class="lcard-toggle">▼</span>
+      </div>
+      <div class="lcard-summary">${fmtRich(summaryText)}</div>
+      <div class="lcard-tags">${tagsHtml}</div>
+      <div class="lcard-detail">
+        ${detailOriginal}
+        ${detailInsight}
+        ${detailAbstract}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function setFilter(f){
+  libFilter = f;
+  renderLibrary();
+}
+
+function toggleCard(el){
+  const wasOpen = el.classList.contains('expanded');
+  document.querySelectorAll('.lcard.expanded').forEach(c=>{
+    if(c !== el) c.classList.remove('expanded');
+  });
+  el.classList.toggle('expanded', !wasOpen);
+}
+
+// カードのクリックイベント（デリゲーション）
+document.getElementById('libList').addEventListener('click', function(e){
+  const card = e.target.closest('.lcard');
+  if(card) toggleCard(card);
+});
+</script>
+</body>
+</html>

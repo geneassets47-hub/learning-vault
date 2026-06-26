@@ -1,0 +1,13 @@
+.env
+learning.db
+__pycache__/
+*.pyc
+server.log
+server.err
+watchdog.py
+起動.bat
+起動.vbs
+wd_*.txt
+tmp_*.txt
+.gitignore
+fly.toml
