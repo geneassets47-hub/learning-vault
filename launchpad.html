@@ -1097,7 +1097,10 @@ const STATS = [
   { id:'rakumachi', name:'楽待',          icon:'🏠', bar:'fill-bl', lv:'lv-bl', keys:['楽待','楽町','物件','利回り','収益物件'] },
   { id:'newspicks', name:'NewsPicks',     icon:'⚡', bar:'fill-cy', lv:'lv-cy', keys:['newspicks','ニューズピックス','経済','金利','市場','ニュース','株'] },
   { id:'sakiyomi',  name:'SAKIYOMI',      icon:'📱', bar:'fill-pu', lv:'lv-pu', keys:['sakiyomi','先読み','instagram','インスタ','reels','台本','コンセプト'] },
-  { id:'kenko',     name:'健康',           icon:'💪', bar:'fill-gn', lv:'lv-gn', keys:['健康','睡眠','食事','運動','筋肉','メンタル','パフォーマンス','もさりんこ'] },
+  { id:'kenko_sleep',    name:'健康／睡眠',   icon:'😴', bar:'fill-gn', lv:'lv-gn', keys:['睡眠','回復','疲労','休息'] },
+  { id:'kenko_food',     name:'健康／食事',   icon:'🥗', bar:'fill-gn', lv:'lv-gn', keys:['食事','栄養','サプリ','腸内'] },
+  { id:'kenko_exercise', name:'健康／運動',   icon:'💪', bar:'fill-gn', lv:'lv-gn', keys:['筋トレ','運動','トレーニング','ジム'] },
+  { id:'kenko_mental',   name:'健康／メンタル',icon:'🧠', bar:'fill-gn', lv:'lv-gn', keys:['メンタル','集中','ストレス','習慣化'] },
 ];
 
 // ランク閾値（総合EXP）
@@ -1322,7 +1325,8 @@ document.getElementById('learnInput').addEventListener('keydown', e => {
 // ═══════════════ ビュー切り替え ═══════════════
 const CAT_ACCENT = {
   mj:'#ff4444', terakoya:'#e8b84b', tomita:'#39ff6e',
-  rakumachi:'#4a9eff', newspicks:'#00e5ff', sakiyomi:'#b44aff', kenko:'#00e676'
+  rakumachi:'#4a9eff', newspicks:'#00e5ff', sakiyomi:'#b44aff',
+  kenko_sleep:'#00e676', kenko_food:'#69f0ae', kenko_exercise:'#b9f6ca', kenko_mental:'#1de9b6'
 };
 let libLoaded = false;
 let libFilter = 'all';
