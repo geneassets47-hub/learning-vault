@@ -553,6 +553,10 @@ body::before{
 .lcard-cat{
   font-size:13px;line-height:1;opacity:.85;
 }
+.lcard-title{
+  font-size:15px;font-weight:700;color:#fff;line-height:1.4;
+  margin-bottom:6px;
+}
 .lcard-summary{
   font-size:13px;font-weight:400;color:#d8dcea;line-height:1.7;
   margin-bottom:8px;white-space:pre-wrap;
@@ -1462,7 +1466,14 @@ function renderLibrary(){
     try { tags = JSON.parse(r.tags||'[]'); } catch(e){}
     const tagsHtml = tags.map(t=>`<span class="lcard-tag">#${escapeHtml(t)}</span>`).join('');
     const date = (r.created||'').slice(0,10);
-    const summaryText = r.summary || r.title || r.input || '';
+    const summaryText = r.summary || r.input || '';
+    // タイトル：title フィールド優先、なければ summary の最初の【】見出しか先頭40文字
+    let cardTitle = r.title || '';
+    if (!cardTitle && r.summary) {
+      const m = r.summary.match(/【([^】]+)】/);
+      cardTitle = m ? m[1] : r.summary.replace(/\n[\s\S]*/,'').slice(0,50);
+    }
+    if (!cardTitle) cardTitle = (r.input||'').slice(0,50);
     const originalText = r.input || '';
     const showOriginal = originalText && originalText !== summaryText;
     const detailOriginal = showOriginal
@@ -1481,6 +1492,7 @@ function renderLibrary(){
         <span class="lcard-cats">${catIcons}</span>
         <span class="lcard-toggle">▼</span>
       </div>
+      <div class="lcard-title">${escapeHtml(cardTitle)}</div>
       <div class="lcard-summary">${fmtRich(summaryText)}</div>
       <div class="lcard-tags">${tagsHtml}</div>
       <div class="lcard-detail">
