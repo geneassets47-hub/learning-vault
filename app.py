@@ -185,6 +185,7 @@ def detect_source(text: str) -> str:
     if "lstep.app" in t or "sakiyomi" in t: return "SAKIYOMI"
     if "line.me" in t:                 return "LINE"
     if "rakumachi" in t:               return "楽町不動産"
+    if "note.com/mosarinko" in t:      return "もさりんこNote"
     if re.match(r'https?://', t):      return "Web記事"
     return "メモ"
 
@@ -199,15 +200,17 @@ STAT_DEFS = {
     "rakumachi": "楽待：楽待の記事・動画。投資家の実例・市場ニュース・物件情報",
     "newspicks": "ニューズピックス：経済・ビジネスニュース。市場・マクロ・業界トレンド",
     "sakiyomi":  "SAKIYOMI先読み：Instagram運用スクール。Reels・台本・コンセプト・フォロワー獲得",
+    "kenko":     "もさりんこNote：健康・身体・メンタル・パフォーマンス向上。食事・睡眠・運動・習慣",
 }
 STAT_IDS = list(STAT_DEFS.keys())
 
 # detect_sourceの結果 → サブスクIDへの確定マッピング（URLで判別できるもの）
 SOURCE_TO_STAT = {
-    "NewsPicks":  "newspicks",
-    "SAKIYOMI":   "sakiyomi",
-    "楽町不動産":  "rakumachi",
-    "LINE":       "mj",        # MJサロンはLINE配信
+    "NewsPicks":   "newspicks",
+    "SAKIYOMI":    "sakiyomi",
+    "楽町不動産":   "rakumachi",
+    "LINE":        "mj",
+    "もさりんこNote": "kenko",
 }
 
 # キーワードマッチ（Claude未使用時のフォールバックのみ）
@@ -218,6 +221,7 @@ STAT_KEYS = {
     "rakumachi": ["楽待","楽町","物件","利回り","収益物件"],
     "newspicks": ["newspicks","ニューズピックス","経済","金利","市場","ニュース","株","景気"],
     "sakiyomi":  ["sakiyomi","先読み","instagram","インスタ","reels","台本","コンセプト","フォロワー"],
+    "kenko":     ["健康","睡眠","食事","運動","筋肉","メンタル","パフォーマンス","習慣","もさりんこ"],
 }
 
 def calc_exp_fallback(text: str) -> list:
