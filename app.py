@@ -145,6 +145,18 @@ def fetch_youtube_transcript(video_id: str) -> str | None:
         print(f"[youtube] transcript取得失敗 {video_id}: {e}")
         return None
 
+def fetch_youtube_metadata(video_id: str) -> dict:
+    """oEmbed APIでYouTube動画のタイトル・チャンネル名を取得（字幕なし動画用）"""
+    try:
+        oembed_url = f"https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v={video_id}&format=json"
+        r = httpx.get(oembed_url, timeout=10)
+        r.raise_for_status()
+        data = r.json()
+        return {"title": data.get("title", ""), "author": data.get("author_name", "")}
+    except Exception as e:
+        print(f"[youtube] oEmbed取得失敗 {video_id}: {e}")
+        return {"title": "", "author": ""}
+
 def fetch_url_content(url: str) -> dict:
     """汎用URL → タイトル + 本文テキストを取得"""
     try:
@@ -389,11 +401,17 @@ def process_record(text: str) -> dict:
             analyze_target = transcript
             transcript_fetched = True
         else:
-            # 字幕が取れない場合はYouTubeページからタイトル・説明文を取得してフォールバック
-            fetched = fetch_url_content(text)
-            if fetched.get("ok") and (fetched.get("title") or fetched.get("og") or fetched.get("body")):
-                title = fetched["title"]
-                analyze_target = f"タイトル: {fetched['title']}\n概要: {fetched['og']}\n{fetched['body']}"
+            # 字幕が取れない場合はoEmbed APIでタイトル・チャンネル名を取得してフォールバック
+            meta = fetch_youtube_metadata(video_id)
+            if meta.get("title"):
+                title = meta["title"]
+                analyze_target = (
+                    f"【YouTube動画：字幕なし】\n"
+                    f"タイトル: {meta['title']}\n"
+                    f"チャンネル: {meta['author']}\n"
+                    f"URL: {text}\n\n"
+                    f"※字幕データは取得できなかったため、タイトルとチャンネル情報のみから推定してください。"
+                )
             else:
                 return {"ok": False, "reason": "no_content",
                         "message": "この動画は字幕・情報を取得できませんでした。観た後に要点をテキストで送ってください。"}
