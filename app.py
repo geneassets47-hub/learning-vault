@@ -389,9 +389,14 @@ def process_record(text: str) -> dict:
             analyze_target = transcript
             transcript_fetched = True
         else:
-            # 字幕が取れない → ゴミを蓄積しない。要点入力を促す
-            return {"ok": False, "reason": "no_content",
-                    "message": "この動画は字幕が取得できませんでした。観た後に要点をテキストで送ってください（その方が精度も上がります）。"}
+            # 字幕が取れない場合はYouTubeページからタイトル・説明文を取得してフォールバック
+            fetched = fetch_url_content(text)
+            if fetched.get("ok") and (fetched.get("title") or fetched.get("og") or fetched.get("body")):
+                title = fetched["title"]
+                analyze_target = f"タイトル: {fetched['title']}\n概要: {fetched['og']}\n{fetched['body']}"
+            else:
+                return {"ok": False, "reason": "no_content",
+                        "message": "この動画は字幕・情報を取得できませんでした。観た後に要点をテキストで送ってください。"}
 
     # 汎用URL（YouTube以外）
     elif is_url:
