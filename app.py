@@ -396,19 +396,22 @@ def process_record(text: str) -> dict:
     # YouTube
     video_id = extract_video_id(text)
     if video_id:
+        # 常にoEmbedでタイトル取得（字幕あり・なし問わず）
+        meta = fetch_youtube_metadata(video_id)
+        if meta.get("title"):
+            title = meta["title"]
+
         transcript = fetch_youtube_transcript(video_id)
         if transcript:
-            analyze_target = transcript
+            analyze_target = f"タイトル: {title}\nチャンネル: {meta.get('author','')}\n\n{transcript}" if title else transcript
             transcript_fetched = True
         else:
-            # 字幕が取れない場合はoEmbed APIでタイトル・チャンネル名を取得してフォールバック
-            meta = fetch_youtube_metadata(video_id)
-            if meta.get("title"):
-                title = meta["title"]
+            # 字幕なし：タイトル情報のみで分析
+            if title:
                 analyze_target = (
                     f"【YouTube動画：字幕なし】\n"
-                    f"タイトル: {meta['title']}\n"
-                    f"チャンネル: {meta['author']}\n"
+                    f"タイトル: {title}\n"
+                    f"チャンネル: {meta.get('author','')}\n"
                     f"URL: {text}\n\n"
                     f"※字幕データは取得できなかったため、タイトルとチャンネル情報のみから推定してください。"
                 )
