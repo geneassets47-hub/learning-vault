@@ -140,7 +140,7 @@ def fetch_youtube_transcript(video_id: str) -> str | None:
         text = ' '.join(s.text for s in fetched if s.text.strip())
         text = re.sub(r'\[(音楽|拍手|笑|Music|Applause)\]', '', text)
         text = re.sub(r'\s+', ' ', text).strip()
-        return text[:6000] if text else None
+        return text if text else None
     except Exception as e:
         print(f"[youtube] transcript取得失敗 {video_id}: {e}")
         return None
@@ -303,7 +303,7 @@ def analyze_with_claude(content: str, source: str, title: str = "") -> dict:
 
 {title_line}ソース: {source}
 内容:
-{content[:5500]}
+{content}
 
 【最重要・書き方のルール】
 - この動画/記事の「一番言いたいこと（主張・結論）」を最初に明確に書く。
