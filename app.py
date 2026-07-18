@@ -502,7 +502,7 @@ async def record_learning(body: RecordIn):
     return process_record(text)
 
 @app.get("/api/learnings")
-async def get_learnings(limit: int = 20):
+async def get_learnings(limit: int = 500):
     if DATABASE_URL:
         con = db_connect()
         cur = con.cursor()
