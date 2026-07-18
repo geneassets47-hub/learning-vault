@@ -1466,7 +1466,7 @@ function renderLibrary(){
     try { tags = JSON.parse(r.tags||'[]'); } catch(e){}
     const tagsHtml = tags.map(t=>`<span class="lcard-tag">#${escapeHtml(t)}</span>`).join('');
     const date = (r.created||'').slice(0,10);
-    const summaryText = r.summary || r.input || '';
+    const summaryText = (r.summary || r.input || '').replace(/^【[^】]*】\s*/,'');
     // タイトル：title フィールド優先、なければ summary の最初の【】見出しか先頭40文字
     let cardTitle = r.title || '';
     if (!cardTitle && r.summary) {
