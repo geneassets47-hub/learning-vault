@@ -32,7 +32,7 @@ app.mount("/static", StaticFiles(directory="."), name="static")
 
 # ── パス設定（クラウド/ローカル自動切替） ──
 DATABASE_URL = os.getenv("DATABASE_URL", "")           # Supabase等のPostgres URL
-IS_CLOUD     = os.name != 'nt' or bool(DATABASE_URL)   # Linux(Docker)かDB_URL指定でTrue
+IS_CLOUD     = os.name != 'nt'                          # Linux(Docker)=クラウド環境。DBはDATABASE_URLの有無で独立に切替
 PH           = "%s" if DATABASE_URL else "?"            # プレースホルダー
 DB_PATH      = Path(os.getenv("DB_PATH", "learning.db"))
 OBSIDIAN_DIR = Path(os.getenv("OBSIDIAN_DIR", r"C:\Users\akkey\OneDrive\ドキュメント\Obsidian Vault\Training"))
